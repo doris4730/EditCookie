@@ -8,7 +8,8 @@ timerStart = performance.now();
 
 // point of entry -->
 
-$(document).ready(function() {
+$(document).ready(function()
+{
 	logTimestamp(timerStart, 'dom ready');
 	main_thread();
 	set_handlers();
@@ -16,40 +17,50 @@ $(document).ready(function() {
 
 // point of entry <--
 
-function main_thread() {
+function main_thread()
+{
 	$('#cookie-info-form').hide();
 	$('#add-cookie-form').hide();
 	$('#cookie-table').show();
 	
-	sendMessage('GetCookies', '', function (response) {
-		if (response !== undefined) {
+	sendMessage('GetCookies', '', function (response)
+	{
+		if (response !== undefined)
+		{
 			str_cookies = response;
 			$(document).trigger('check_storage');
 		}
-		else { no_cookies(); }
+		else
+		{
+			no_cookies();
+		}
 	});
 }
 
 // data-load events -->
 
-$(document).on('check_storage', function() {
+$(document).on('check_storage', function()
+{
 	chrome.storage.sync.get({
 		search: false,
 		search_text: ''
 	},
-	function(items) {
+	function(items)
+	{
 		console.dir(items);
 		search = items.search;
 		search_text = items.search_text;
 		
-		if (search) {
+		if (search)
+		{
 			$('#control-search').addClass('btn-success');
 			$('#control-search img').attr('src', '/img/search_white.png');
 			$('.search-cookie').show();
 			$('#search-cookie-input').val(search_text);
 			$('#search-cookie-input').focus();
 		}
-		else {
+		else
+		{
 			$('#control-search img').attr('src', '/img/search.png');
 			$('.search-cookie').hide();
 		}
@@ -58,24 +69,29 @@ $(document).on('check_storage', function() {
 	});
 });
 
-$(document).on('storage_ready', function() {
+$(document).on('storage_ready', function()
+{
 	$(document).trigger('get_url');
 });
 
-$(document).on('get_url', function() {
-	chrome.tabs.getSelected(null, function(tab) {
+$(document).on('get_url', function()
+{
+	chrome.tabs.getSelected(null, function(tab)
+	{
 		tab_url = tab.url;
 		$(document).trigger('url_ready');
 	});
 });
 
-$(document).on('url_ready', function() {
+$(document).on('url_ready', function()
+{
 	console.log('url: ' + tab_url);
 	
 	var cookies = str_cookies.split('; ');
 	
 	$('#cookie-content').empty();
 	page_cookies = [];
+	
 	for (var i = 0; i < cookies.length; i++) {
 		var item = cookies[i].split('=');
 		var name = item[0];
@@ -87,7 +103,8 @@ $(document).on('url_ready', function() {
 			url: tab_url,
 			name : name
 		},
-		function(cookie) {
+		function(cookie)
+		{
 			page_cookies.push({
 				name: cookie.name,
 				value: cookie.value,
@@ -111,8 +128,8 @@ $(document).on('url_ready', function() {
 
 // interface handlers -->
 
-function set_handlers() {
-	
+function set_handlers()
+{
 	$('#control-search').click(function() {
 		$(this).toggleClass('btn-success');
 		
@@ -331,38 +348,56 @@ function set_cookie_handlers() {
 
 // cookie functions -->
 
-function sendMessage(subject, message, callback) {
-	chrome.tabs.query({ active: true, currentWindow: true },
-	function(tabs) { 
+function sendMessage(subject, message, callback)
+{
+	chrome.tabs.query(
+	{
+		active: true,
+		currentWindow: true
+	},
+	function(tabs)
+	{ 
 		chrome.tabs.sendMessage(tabs[0].id,
-		{from: 'popup', subject: subject, message: message},
+		{
+			from: 'popup',
+			subject: subject,
+			message: message
+		},
 		callback);
 	});
 }
 
 function addCookie(name, value, expDays, callback) {
-	sendMessage('AddCookie', {
+	sendMessage('AddCookie',
+	{
 		name: name,
 		value: value,
 		expDays: expDays
-	}, callback);
+	},
+	callback);
 }
 
-function setCookie(name, value, expTimestamp, callback) {
-	sendMessage('SetCookie', {
+function setCookie(name, value, expTimestamp, callback)
+{
+	sendMessage('SetCookie',
+	{
 		name: name,
 		value: value,
 		expTimestamp: expTimestamp
-	}, callback);
+	},
+	callback);
 }
 
-function editCookie(oldName, newName, newValue, newExpTimestamp, callback) {
-	deleteCookie(oldName, function() {
+function editCookie(oldName, newName, newValue, newExpTimestamp, callback)
+{
+	deleteCookie(oldName, function()
+	{
 		setCookie(newName, newValue, newExpTimestamp, callback);
 	});
 }
 
-function deleteCookie(name, callback) {
+function deleteCookie(name, callback)
+{
 	sendMessage('DelCookie', name, callback);
 }
 
@@ -370,56 +405,72 @@ function deleteCookie(name, callback) {
 
 // interface functions -->
 
-function showCookieCount(cookie) {
+function showCookieCount(cookie) 
+{
 	function showCount(count) {
 		$('#cookie-count').html('Found <b>' + count + '</b> cookies');
 		$('#cookie-count').attr('data-cookie-count', count);
 	}
-	if (Array.isArray(cookie)) { showCount(cookie.length); }
-	else { showCount(cookie); }
+	if (Array.isArray(cookie))
+	{
+		showCount(cookie.length);
+	}
+	else 
+	{
+		showCount(cookie);
+	}
 }
 
-function decCookieCount(times) {
+function decCookieCount(times)
+{
 	var new_val = +$('#cookie-count').attr('data-cookie-count') - times;
 	$('#cookie-count').html('Found <b>' + new_val + '</b> cookies').hide().fadeIn();
 	$('#cookie-count').attr('data-cookie-count', new_val);
 }
 
-function addRow(id, key, val) {
-	function appendCookie(id, key, val) {
-		$('#cookie-content').append('<tr data-cookie-id="' + id + '" title="L-click: Quick editing, R-click: Advanced editing"><td><button class="cookie-delete btn btn-default btn-xs" title="delete cookie" style="display: none;"><img src="/img/delete.png" width="8"></button><input type="text" class="cookie-key" placeholder="key" value="' + decodeURIComponent(key) + '"></td><td><textarea class="cookie-val" placeholder="value" rows="1">' + decodeURIComponent(val) + '</textarea></td></tr>');
+function addRow(id, key, val)
+{
+	function appendCookie(id, key, val)
+	{
+		$('#cookie-content').append('<tr data-cookie-id="' + id + '" title="L-click: Quick editing, R-click: Advanced editing"><td><input type="text" class="cookie-key" placeholder="key" value="' + decodeURIComponent(key) + '"></td><td><textarea class="cookie-val" placeholder="value" rows="1">' + decodeURIComponent(val) + '</textarea><button class="cookie-delete btn btn-default btn-xs" title="delete cookie" style="display: none;"><img src="/img/delete.png" width="8"></button></td></tr>');
 	}
-	if (!search) {
+	if (!search)
+	{
 		appendCookie(id, key, val);
 	}
-	else if (search && search_text && str_contains(key, search_text)) {
+	else if (search && search_text && str_contains(key, search_text))
+	{
 		appendCookie(id, key, val);
 	}
 }
 
-function notifySaved() {
+function notifySaved()
+{
 	$('#notification-bar').append('<span class="text-success">changes saved</span>').hide().fadeIn();
 	setTimeout(function() {
 		$('#notification-bar').children().fadeOut(600, function() {
 			$(this).remove();
 		});
-	}, 1000);
+	}, 2000);
 }
 
-function notifyDeleted() {
+function notifyDeleted()
+{
 	$('#notification-bar').append('<span class="text-danger">cookie deleted</span>').hide().fadeIn();
 	setTimeout(function() {
 		$('#notification-bar').children().fadeOut(600, function() {
 			$(this).remove();
 		});
-	}, 1000);
+	}, 2000);
 }
 
-function highlightSaved(target) {
+function highlightSaved(target)
+{
 	target.parent().css('background', 'rgba(173,255,47,0.5)').hide().fadeIn();
 }
 
-function highlightDeleted(target) {
+function highlightDeleted(target)
+{
 	var this_target = target.parent().parent();
 	this_target.css('background', 'salmon');
 	setTimeout(function() {
@@ -429,7 +480,8 @@ function highlightDeleted(target) {
 	}, 500);
 }
 
-function no_cookies() {
+function no_cookies()
+{
 	$('#cookie-table').hide();
 	$('.no-cookies').fadeIn();
 }
@@ -452,7 +504,8 @@ function str_contains(str, val) {
 	return (str.indexOf(val) > -1);
 }
 
-function formatDate(date) {
+function formatDate(date)
+{
 	return date.toLocaleString("en-US", {
 		day : 'numeric',
 		month : 'numeric',
