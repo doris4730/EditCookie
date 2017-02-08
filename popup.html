@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+		<meta charset="utf-8">
+		<title>EditCookie</title>
+		<link href='/libs/Roboto.css' type='text/css' rel='stylesheet'>
+		<link href="/libs/bootstrap.min.css" type='text/css' rel='stylesheet'/>
+		<script src="/libs/jquery.min.js"></script>
+		<script src="/libs/jquery-ui.min.js"></script>
+		<script src="/libs/bootstrap.min.js"></script>
+        <script src="/popup.js"></script>
+		<link href="/style.css" type='text/css' rel='stylesheet'/>
+	</head>
+    <body>
+		<div class="main container row">
+			<nav class="navbar navbar-default">
+				<div class="container">
+					<div class="navbar-header">
+						<button id="add-cookie" type="button" class="navbar-toggle">Add cookie</button>
+						<span class="navbar-brand">
+							<img src="/img/icon16.png" class="pull-left" width="20">
+							<span class="brand-text">EditCookie</span>
+							<img id="cookie-monster" src="/img/cookie_monster.png" width="40" style="position: absolute; left: 0px; top: -40px;">
+						</span>
+					</div>
+				</div>
+			</nav>
+		</div>
+		<div class="search-cookie pull-left">
+			<div class="input-group input-group-sm">
+				<input id="search-cookie-input" type="text" class="form-control" placeholder="Search by key...">
+				<span class="input-group-btn">
+					<button id="search-cookie-btn" class="btn btn-default" type="button"><img src="/img/search.png" width="10"></button>
+				</span>
+			</div>
+		</div>
+		<table id="cookie-table" class="table table-striped table-hover table-bordered table-condensed table-responsive">
+			<caption>
+				<span id="cookie-count"></span>
+				<span id="control-panel">
+					<button id="control-search" class="btn btn-xs"><img src="/img/search.png" width="10"></button>
+				</span>
+				<span id="notification-bar"></span>
+			</caption>
+			<thead><tr><th>Key</th><th>Value</th></tr></thead>
+			<tbody id="cookie-content">
+			</tbody>
+		</table>
+		
+		<form id="cookie-info-form" class="col-sm-12">
+			<div class="form-group">
+				<label for="cookie-edit-key" title="Cookie Key">Key</label>
+				<input id="cookie-edit-key" class="form-control" placeholder="Key" type="text">
+			</div>
+			<div class="form-group">
+				<label for="cookie-edit-value" title="Cookie Value">Value</label>
+				<textarea id="cookie-edit-value" class="form-control" placeholder="Value" rows="4"></textarea>
+			</div>
+			<div class="form-group">
+				<label for="cookie-edit-expires" type="text" title="Cookie Expiration Date">Expires</label>
+				<input id="cookie-edit-expires" class="form-control" placeholder="Expires">
+			</div>
+			<div class="form-group">
+				<a href="#moreInfo" data-toggle="collapse"  aria-expanded="false" aria-controls="moreInfo">More info</a>
+			</div>
+			<div id="moreInfo" class="collapse form-group">
+				<textarea id="cookie-edit-more-info" class="form-control" placeholder="Advanced cookie info" rows="4"></textarea>
+			</div>
+			<div id="cookie-edit-panel">
+				<button id="cookie-edit-back" class="btn btn-default btn-sm">Back</button>
+				<button id="cookie-edit-save" class="btn btn-success btn-sm">Save</button>
+				<button id="cookie-edit-delete" class="btn btn-danger btn-sm">Delete</button>
+			</div>
+		</form>
+		
+		<form id="add-cookie-form" class="col-sm-12">
+			<div class="form-group">
+				<button id="add-cookie-back" class="btn btn-default btn-sm">Back</button>
+			</div>
+			<div class="form-group">
+				<label for="add-cookie-key" title="Cookie Key">Key</label>
+				<input id="add-cookie-key" class="form-control" placeholder="Key" type="text">
+			</div>
+			<div class="form-group">
+				<label for="add-cookie-value" title="Cookie Value">Value</label>
+				<textarea id="add-cookie-value" class="form-control" placeholder="Value" rows="2"></textarea>
+			</div>
+			<div class="form-group">
+				<label for="add-cookie-expires" type="text" title="Cookie Expires in Days">Expires in days</label>
+				<input id="add-cookie-expires" class="form-control" placeholder="Expires" value="30">
+			</div>
+			<div class="form-group">
+				<button id="add-cookie-confirm" class="btn btn-success">Add cookie</button>
+			</div>
+		</form>
+		<div class="no-cookies alert alert-info" role="alert"><b>No cookies found!</b> Reload this page and try again.</div>
+	</body>
+</html>
